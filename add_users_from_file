@@ -1,0 +1,11 @@
+#!/bin/bash
+
+while read line 
+do
+	login=$(echo $line | cut -f 1 -d '(' | tr '[:upper:]' '[:lower:]' | awk '{$1=$1};1'| tr " " "_")
+	description=$(echo $line | cut -f 2 -d ')')
+	passwd=$(date +%s | sha256sum | base64 | head -c 10)
+	useradd $login --comment ",,,,$description" 
+	echo $login:$passwd | sudo chpasswd
+	
+done < $1
